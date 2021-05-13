@@ -13,6 +13,7 @@ export class Payment extends React.Component {
                   Billing 
                 </h2>
                 
+                <div className="cloumn"></div>
                         
               </Column>
             </Row>
