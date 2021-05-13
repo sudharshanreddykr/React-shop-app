@@ -1,97 +1,122 @@
-import React, { SyntheticEvent } from "react";
-import { connect } from "react-redux";
-import { RouteComponentProps } from "react-router";
-import { Redirect } from "react-router-dom";
-import { Dispatch } from "redux";
+import axios from "axios";
+import React from "react";
+import { BrowserRouter, NavLink, Redirect, useHistory } from "react-router-dom";
 import Column from "../components/Column";
-import LoadingWrapper from "../components/LoadingWrapper";
 import Row from "../components/Row";
-import TextBox from "../components/TextBox";
-import StorageService from "../services/StorageService";
-import UserService from "../services/UserService";
-import LoadingActions from "../store/actions/LoadingActions";
-import UserActions from "../store/actions/UserActions";
-import { StoreType } from "../types";
-import formatter from "../utils/formatter";
-type LoginProps = {
-  signinSuccess: (user: object) => void;
-  signinError: (error: string) => void;
-  showLoader: () => void;
-  hideLoader: () => void;
-  isAuthenticated: boolean;
-  errorMessage: string | null;
-} & RouteComponentProps;
-type LoginState = { email: string; password: string };
-class Login extends React.Component<LoginProps, LoginState> {
-  state: LoginState = { email: "", password: "" };
-  login = async (e: SyntheticEvent) => {
-    try {
-      e.preventDefault();
-      const { email, password } = this.state;
-      this.props.showLoader();
-      const { data } = await UserService.login(email, password);
-      await StorageService.storeData("token", data.access_token);
-      this.props.signinSuccess(data); // create/store session
-      this.props.hideLoader();
-    } catch (e) {
-      this.props.signinError(formatter.titlecase(e.message.toString()));
-      this.props.hideLoader();
+
+type RegisterState = {
+  email: any;
+  name: any;
+  password: any;
+  conformpassword: any;
+  redirect: boolean;
+};
+class Register extends React.Component {
+  state: RegisterState = {
+    email: "",
+    name: "",
+    password: "",
+    conformpassword: "",
+    redirect: false,
+  };
+
+  submit = (e: any) => {
+    e.preventDefault();
+
+    if (this.state.conformpassword === this.state.password) {
+      const user = {
+        name: this.state.name,
+        email: this.state.email,
+        password: this.state.password,
+      };
+      axios.post("http://localhost:5000/auth/register", user).then(
+        (response) => console.log(response.status === 201)
+        // history.state("/login")
+      );
+      this.setState({ redirect: true });
     }
   };
-  render() {
-    if (this.props.isAuthenticated) {
-      let lastPage = "/"; // by default home page
-      const state: any = this.props.location.state;
-      if (state && state.from) {
-        lastPage = state.from; // last page path
-      }
-      return <Redirect to={lastPage} />;
+
+  redirecting = () => {
+    if (this.state.redirect) {
+      return <Redirect to="/login" />;
     }
+  };
+
+  changeValue = (e: any) => {
+    this.setState({ [e.target.name]: e.target.value });
+  };
+
+  render() {
     return (
-      <LoadingWrapper>
+      <div className="container register-form">
+        {this.redirecting()}
         <Row>
           <Column
-            size={4}
+            size={8}
             classes={
-              "offset-md-4 shadow-sm border p-4 text-center rounded mt-5"
+              "offset-md-2 mt-2 shadow-lg p-5 rounded border border-4 border border-dark"
             }
           >
-            <h2>Login</h2>
-            <hr />
-            <small className="text-danger">{this.props.errorMessage}</small>
-            <form onSubmit={this.login}>
-              <TextBox
-                placeholder={"Email"}
-                type={"email"}
-                textChange={(email) => this.setState({ email })}
-              />
-              <TextBox
-                placeholder={"Password"}
-                type={"password"}
-                textChange={(password) => this.setState({ password })}
-              />
-              <button className={"btn btn-success w-100 text-uppercase"}>
-                Login
+            <form onSubmit={this.submit}>
+              <div className="mb-3">
+                <label className="form-label">Name</label>
+                <input
+                  type="name"
+                  className="form-control"
+                  name="name"
+                  value={this.state.name}
+                  onChange={this.changeValue}
+                />
+              </div>
+              <div className="mb-3">
+                <label className="form-label">Email</label>
+                <input
+                  type="email"
+                  className="form-control"
+                  name="email"
+                  value={this.state.email}
+                  onChange={this.changeValue}
+                />
+              </div>
+              <div className="mb-3">
+                <label className="form-label">Password</label>
+                <input
+                  type="password"
+                  className="form-control"
+                  name="password"
+                  value={this.state.password}
+                  onChange={this.changeValue}
+                />
+              </div>
+              <div className="mb-3">
+                <label className="form-label">Re-EnterPassword</label>
+                <input
+                  type="password"
+                  className="form-control"
+                  name="conformpassword"
+                  value={this.state.conformpassword}
+                  onChange={this.changeValue}
+                />
+                {this.state.conformpassword === this.state.password ? null : (
+                  <p>Password is not Matchning</p>
+                )}
+              </div>
+              <div className="mb-3 form-check">
+                <input type="checkbox" className="form-check-input" required />
+                <label className="form-check-label">
+                  Accept All Term & Conditions
+                </label>
+              </div>
+              <button type="submit" className="btn btn-success ">
+                Register
               </button>
             </form>
           </Column>
         </Row>
-      </LoadingWrapper>
+      </div>
     );
   }
 }
-const mapStoreDataToProps = (storeData: StoreType) => {
-  return {
-    isAuthenticated: !!storeData.userSession.user, // converting to boolean
-    errorMessage: storeData.userSession.error,
-  };
-};
-const mapDispatchToProps = (dispatch: Dispatch) => {
-  return {
-    signinSuccess: (user: object) => dispatch(UserActions.loginSuccess(user)),
-    signinError: (err: string) => dispatch(UserActions.loginError(err)),
-    hideLoader: () => dispatch(LoadingActions.hideLoader()),
-    showLoader: () => dispatch(LoadingActions.showLoader()),
-  };
-};
-export default connect(mapStoreDataToProps, mapDispatchToProps)(Login);
+
+export default Register;

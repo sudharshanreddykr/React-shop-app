@@ -17,4 +17,5 @@ const removeItem = (id: number) => {
     id,
   };
 };
+
 export default { ActionTypes, addToCart, removeItem };
