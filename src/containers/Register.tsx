@@ -1,6 +1,6 @@
 import axios from "axios";
 import React from "react";
-import { BrowserRouter, NavLink, Redirect, useHistory } from "react-router-dom";
+import {  Redirect } from "react-router-dom";
 import Column from "../components/Column";
 import Row from "../components/Row";
 

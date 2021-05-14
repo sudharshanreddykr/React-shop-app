@@ -43,18 +43,20 @@ class Cart extends React.Component<Props> {
         <Row>
           {this.props.cart.map((val) => (
             <Column
-              size={7}
+              size={5}
               classes={
-                "d-flex justify-content-between rounded-3 align-items-start rounded-3 float-start mt-1 shadow-lg h-30 w-60 mb-3  border border-5"
+                "d-flex justify-content-between rounded-3 align-items-start rounded-3 float-start mt-1 shadow-lg h-50 w-50 mb-3  border border-5"
               }
             >
               <Link to={`/productdetail/${val.productId}`}>
-                <ImageWithFallback
-                  source={val.productImage}
-                  classes={
-                    "w-20 h-20 img-thumbnail rounded float-start rounded-3"
-                  }
-                />
+                <div className="imgfall">
+                  <ImageWithFallback
+                    source={val.productImage}
+                    classes={
+                      "w-25 h-25 img-thumbnail rounded float-start rounded-3"
+                    }
+                  />
+                </div>
               </Link>
               <div className="d-flex fw-bold align-items-start flex-column">
                 <h5 className={"mt-4 fw-bold"}>
@@ -98,12 +100,15 @@ class Cart extends React.Component<Props> {
           ))}
         </Row>
         <Row>
-          <Column size={ 12 } classes="align-items-center">
+          <Column size={12} classes="align-items-center">
             <NavLink to={"/payment"}>
-            <button onClick={()=> console.log("checkout")} className="bg-warning border border-3 rounded-3  fw-bold  fs-3 text-light text-center p-2 w-50 align-items-start shadow-lg float-end">
-              Check Out
+              <button
+                onClick={() => console.log("checkout")}
+                className="bg-warning border border-3 rounded-3  fw-bold  fs-3 text-light text-center p-2 w-50 align-items-start shadow-lg float-end"
+              >
+                Check Out
               </button>
-              </NavLink>
+            </NavLink>
           </Column>
         </Row>
       </Container>
