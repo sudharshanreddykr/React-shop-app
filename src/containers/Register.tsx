@@ -1,120 +1,92 @@
-import axios from "axios";
-import React from "react";
-import {  Redirect } from "react-router-dom";
+import React, { SyntheticEvent } from "react";
+import { RouteComponentProps } from "react-router";
+import { Redirect } from "react-router-dom";
 import Column from "../components/Column";
+import LoadingWrapper from "../components/LoadingWrapper";
 import Row from "../components/Row";
+import TextBox from "../components/TextBox";
+import UserService from "../services/UserService";
+
+type RegisterProps = {
+  signinSuccess: (user: object) => void;
+  signinError: (error: string) => void;
+  showLoader: () => void;
+  hideLoader: () => void;
+  isAuthenticated: boolean;
+} & RouteComponentProps;
 
 type RegisterState = {
-  email: any;
-  name: any;
-  password: any;
-  conformpassword: any;
-  redirect: boolean;
+  email: string;
+  password: string;
+  name: string;
+  errorMessage: string | null;
+  returnName: string;
 };
-class Register extends React.Component {
+
+class Register extends React.Component<RegisterProps, RegisterState> {
   state: RegisterState = {
     email: "",
-    name: "",
     password: "",
-    conformpassword: "",
-    redirect: false,
+    name: "",
+    errorMessage: "",
+    returnName: "",
   };
 
-  submit = (e: any) => {
-    e.preventDefault();
-
-    if (this.state.conformpassword === this.state.password) {
-      const user = {
-        name: this.state.name,
-        email: this.state.email,
-        password: this.state.password,
-      };
-      axios.post("http://localhost:5000/auth/register", user).then(
-        (response) => console.log(response.status === 201)
-        // history.state("/login")
-      );
-      this.setState({ redirect: true });
+  register = async (e: SyntheticEvent) => {
+    try {
+      e.preventDefault();
+      console.log(e);
+      const { email, password, name } = this.state;
+      const { data } = await UserService.register(email, password, name);
+      console.log(data);
+      this.setState({ returnName: data.userName });
+    } catch (e) {
+      this.setState({ errorMessage: e.message });
     }
   };
-
-  redirecting = () => {
-    if (this.state.redirect) {
-      return <Redirect to="/login" />;
-    }
-  };
-
-  changeValue = (e: any) => {
-    this.setState({ [e.target.name]: e.target.value });
-  };
-
   render() {
+    if (this.state.returnName) {
+      return <Redirect to={"/login"} />;
+    }
+
     return (
-      <div className="container register-form">
-        {this.redirecting()}
+      <LoadingWrapper>
         <Row>
           <Column
-            size={8}
+            size={4}
             classes={
-              "offset-md-2 mt-2 shadow-lg p-5 rounded border border-4 border border-dark"
+              "offset-md-4 shadow-sm border p-4 text-center rounded mt-5"
             }
           >
-            <form onSubmit={this.submit}>
-              <div className="mb-3">
-                <label className="form-label">Name</label>
-                <input
-                  type="name"
-                  className="form-control"
-                  name="name"
-                  value={this.state.name}
-                  onChange={this.changeValue}
-                />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">Email</label>
-                <input
-                  type="email"
-                  className="form-control"
-                  name="email"
-                  value={this.state.email}
-                  onChange={this.changeValue}
-                />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">Password</label>
-                <input
-                  type="password"
-                  className="form-control"
-                  name="password"
-                  value={this.state.password}
-                  onChange={this.changeValue}
-                />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">Re-EnterPassword</label>
-                <input
-                  type="password"
-                  className="form-control"
-                  name="conformpassword"
-                  value={this.state.conformpassword}
-                  onChange={this.changeValue}
-                />
-                {this.state.conformpassword === this.state.password ? null : (
-                  <p>Password is not Matchning</p>
-                )}
-              </div>
-              <div className="mb-3 form-check">
-                <input type="checkbox" className="form-check-input" required />
-                <label className="form-check-label">
-                  Accept All Term & Conditions
-                </label>
-              </div>
-              <button type="submit" className="btn btn-success ">
+            <h2>Register</h2>
+            <hr />
+            <small className="text-danger">{this.state.errorMessage}</small>
+            <form onSubmit={this.register}>
+              <TextBox
+                placeholder={"Name"}
+                type={"text"}
+                textChange={(name) => this.setState({ name })}
+              />
+
+              <TextBox
+                placeholder={"Email"}
+                type={"email"}
+                textChange={(email) => this.setState({ email })}
+              />
+              <TextBox
+                placeholder={"Password"}
+                type={"password"}
+                textChange={(password) => this.setState({ password })}
+              />
+             
+
+              <button className={"btn btn-success w-100 text-uppercase"}>
                 Register
               </button>
             </form>
           </Column>
         </Row>
-      </div>
+      </LoadingWrapper>
     );
   }
 }

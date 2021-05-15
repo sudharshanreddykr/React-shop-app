@@ -35,6 +35,10 @@ export type LoginResponseType = {
   expiresIn: number;
   access_token: string;
 };
+export type RegisterResponseType = {
+  userName: string;
+  userEmail: string;
+}
 
 export type UserSessionType = {
   user: object | null;

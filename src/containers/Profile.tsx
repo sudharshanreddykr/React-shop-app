@@ -8,22 +8,22 @@ import UserService from "../services/UserService";
 type Props = {};
 type State = {
   profileData: any;
-  address: any;
+  
 };
 
 
 
 class Profile extends React.Component<Props, State> {
-  state: State = { profileData: [] , address: []};
+  state: State = { profileData: [] };
   
   async componentDidMount() {
     try {
       const { data } = await UserService.profile();
-      const address = await UserService.address();
-      console.log( address );
+      // const address = await UserService.address();
+    //  console.log( address );
       this.setState( {
         profileData: data,
-        address: address.data[0],
+        // address: address.data[0],
       } )
     } catch (e) {
       console.log(e.response.data);
@@ -38,8 +38,8 @@ class Profile extends React.Component<Props, State> {
             <div className="header text-light bg-dark text-center">
               User Profile
             </div>
-            <div className="card align-items-center border border-5 shadow-lg ">
-              <div className="imgfallback">
+            <div className="card align-items-center border border-5 fs-6 shadow-lg ">
+              <div className="imgfallback ">
                 <ImageWithFallback
                   source="https://icons-for-free.com/iconfiles/png/512/avatar+human+people+profile+user+icon-1320168139431219590.png"
                   classes="card-img-top img-responsive"
@@ -72,21 +72,24 @@ class Profile extends React.Component<Props, State> {
                 </li>
                 <li className="list-group-item">
                   Address :
-                  <span className="text-warning">
+                  {/* <span className="text-warning">
                     {this.state.address.line1}, {this.state.address.line2} ,
                     {this.state.address.city}, {this.state.address.state} ,
                     {this.state.address.pincode}
-                  </span>
+                  </span> */}
                   .
                 </li>
-                <div
-                  className="d-flex ms-5">
-                  <button type="button" className="btn btn-primary">
-                    update
-                  </button>
+                <div className="d-flex ms-5">
+                  <NavLink to={'/edit'}>
+                    <button type="button" className="btn btn-primary">
+                      update
+                    </button>
+                  </NavLink>
+                  
                   <button type="button" className="btn btn-danger ms-5">
-                    Delete
+                      Delete
                   </button>
+                    
                 </div>
                 <li className="list-group-item">
                   <NavLink to="/cart">Go to My Orders</NavLink>
