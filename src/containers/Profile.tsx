@@ -1,36 +1,59 @@
+import { Icon } from "@material-ui/core";
+import axios from "axios";
 import React from "react";
 import { NavLink } from "react-router-dom";
 import Column from "../components/Column";
 import Container from "../components/Container";
 import ImageWithFallback from "../components/ImageWithFallback";
 import Row from "../components/Row";
+import StorageService from "../services/StorageService";
 import UserService from "../services/UserService";
 type Props = {};
 type State = {
   profileData: any;
+  address: any;
+  delAddress: any;
   
 };
 
 
 
 class Profile extends React.Component<Props, State> {
-  state: State = { profileData: [] };
+  state: State = { profileData: [], address:[], delAddress:[] };
   
   async componentDidMount() {
     try {
       const { data } = await UserService.profile();
-      // const address = await UserService.address();
-    //  console.log( address );
       this.setState( {
         profileData: data,
-        // address: address.data[0],
-      } )
+        address: data.address,
+     })
+      
     } catch (e) {
-      console.log(e.response.data);
+      console.log(e);
     }
+  } async getData () {
+    const { data } = await UserService.profile();
+    this.setState( {
+      address: data.address
+    })
   }
   render () {
+    console.log( this.state.address )
     console.log(this.state.profileData);
+    const delAddress = ( e: any ) => {
+      let delAddressId = e.target.value;
+
+      return StorageService.getData( "token" ).then( ( token ) =>
+        axios.delete( ` http://localhost:5000/address/${ delAddressId }`, {
+        headers: {Authorization: `Bearer ${token}`},
+        } )
+        .then(()=> {
+          this.getData();
+          console.log("data deleted");
+        }).catch(err=> console.log(err))
+      )
+    }
     return (
       <Container>
         <Row>
@@ -70,27 +93,29 @@ class Profile extends React.Component<Props, State> {
                     {this.state.profileData.userId}
                   </span>
                 </li>
-                <li className="list-group-item">
-                  Address :
-                  {/* <span className="text-warning">
-                    {this.state.address.line1}, {this.state.address.line2} ,
-                    {this.state.address.city}, {this.state.address.state} ,
-                    {this.state.address.pincode}
-                  </span> */}
-                  .
-                </li>
-                <div className="d-flex ms-5">
-                  <NavLink to={'/edit'}>
-                    <button type="button" className="btn btn-primary">
-                      update
+                {this.state.address.map((address: any) => (
+                  <li className="list-group-item">
+                    {" "}
+                    Address :
+                    <span className="text-warning">
+                      {address.line1} ,{address.line2}, {address.city},{" "}
+                      {address.state} ,{address.pincode}.
+                    </span>
+                    <button
+                      type="button"
+                      className="btn btn-danger btn-sm ms-5 float-end"
+                      value={address.id}
+                      onClick={delAddress}
+                    >
+                      <i className="fas fa-trash display-7"></i>
                     </button>
-                  </NavLink>
-                  
-                  <button type="button" className="btn btn-danger ms-5">
-                      Delete
+                  </li>
+                ))}
+                <NavLink to={"/address"}>
+                  <button type="button" className="btn btn-primary btn-sm">
+                    Update
                   </button>
-                    
-                </div>
+                </NavLink>
                 <li className="list-group-item">
                   <NavLink to="/cart">Go to My Orders</NavLink>
                 </li>

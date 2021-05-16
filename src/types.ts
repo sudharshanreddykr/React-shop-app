@@ -1,8 +1,12 @@
 export type StoreType = {
+   
   currency: string;
   cart: CartType[];
+  productDetail: ProductType[];
   userSession: UserSessionType;
   loading: boolean;
+  search: any;
+  
 };
 
 export type ProductType = {
@@ -36,8 +40,8 @@ export type LoginResponseType = {
   access_token: string;
 };
 export type RegisterResponseType = {
-  userName: string;
-  userEmail: string;
+  name: string;
+  email: string;
 }
 
 export type UserSessionType = {

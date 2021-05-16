@@ -3,8 +3,8 @@ import { ProductType } from "../../types";
 const ActionTypes = {
   ADD_TO_CART: "[Cart] Add to cart",
   REMOVE_ITEM: "[Cart] Remove item",
-  INCREAMENT: "[Cart] Increment",
-  DECREAMENT: "[Cart] Decreament"
+  INCREAMENT: "[Cart] Increament",
+  DECREMENT: "[Cart]  Decrement",
 };
 
 const addToCart = (product: ProductType) => {
@@ -20,18 +20,22 @@ const removeItem = (id: number) => {
   };
 };
 
-const increaseQuantity = ( idno: number ) => {
+const increaseQty = (qtyId: number) => {
   return {
     type: ActionTypes.INCREAMENT,
-    idno,
+    qtyId,
   }
 }
-
-const decreaseQuantity = ( id: number ) => {
+const decrementQty = (id: number) => {
   return {
-    type: ActionTypes.DECREAMENT,
+    type: ActionTypes.DECREMENT,
     id,
   }
 }
-
-export default { ActionTypes, addToCart, removeItem, increaseQuantity, decreaseQuantity };
+export default {
+  ActionTypes,
+  addToCart,
+  removeItem,
+  increaseQty,
+  decrementQty
+};

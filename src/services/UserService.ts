@@ -26,4 +26,25 @@ const profile = () => {
   );
 };
 
-export default { login, profile, register};
+const address = () => {
+  const url = `${ constants.BASE_URL }/address`;
+  return StorageService.getData("token").then((token)=> 
+    axios.get( url, {
+    headers: {Authorization: `Bearer ${token}` },
+  })
+  )
+}
+
+
+const addressPost = (line1: string, line2: string, city: string, state: string, pincode: string) => {
+  const url = `${constants.BASE_URL}/address`;
+  return StorageService.getData("token").then((token) =>
+    axios.post(url, { line1, line2, city, state, pincode }, {
+      headers: { Authorization: `Bearer ${token}`, },
+    })
+  );
+};
+
+
+
+export default { login, profile, register, address, addressPost};

@@ -33,6 +33,8 @@ class Product extends React.Component<ProductProps> {
   }
   render() {
     const { pdata, wishlist, currencyCode } = this.props;
+    let finalPrice: any = pdata.productPrice;
+    let finalSalePrice: any = pdata.productSalePrice;
     return (
       <div className="p-4 shadow-sm text-center">
         <Link to={`/productdetail/${pdata.productId}`}>
@@ -40,8 +42,21 @@ class Product extends React.Component<ProductProps> {
         </Link>
         <h5 className={"mt-4"}>{formatter.titlecase(pdata.productName)}</h5>
         <ProductPrice
-          price={pdata.productPrice}
-          salePrice={pdata.productSalePrice}
+          {...(currencyCode === "EUR"
+            ? ((finalPrice = JSON.parse(pdata.productPrice) / 90),
+              (finalSalePrice = JSON.parse(pdata.productSalePrice) / 90))
+            : currencyCode === "USD"
+            ? ((finalPrice = JSON.parse(pdata.productPrice) / 73),
+              (finalSalePrice = JSON.parse(pdata.productSalePrice) / 73))
+            : currencyCode === "CAD"
+            ? ((finalPrice = JSON.parse(pdata.productPrice) / 60),
+              (finalSalePrice = JSON.parse(pdata.productSalePrice) / 60))
+            : currencyCode === "GBP"
+            ? ((finalPrice = JSON.parse(pdata.productPrice) / 103),
+              (finalSalePrice = JSON.parse(pdata.productSalePrice) / 103))
+            : null)}
+          price={finalPrice}
+          salePrice={finalSalePrice}
           code={currencyCode}
         />
         {/* <button>Add to {wishlist ? "Wishlist" : "Cart"}</button> */}
