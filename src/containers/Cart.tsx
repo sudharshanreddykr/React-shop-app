@@ -29,12 +29,6 @@ class Cart extends React.Component<Props, State> {
 
   render() {
     console.log("total", this.state.totalAmo);
-    const submit = (e: any) => {
-      e.preventDefault();
-      this.setState({
-        reRender: true,
-      });
-    };
     const redirecting = () => {
       if (this.state.reRender === true) {
         return <Redirect to="/checkout" />;
@@ -51,9 +45,9 @@ class Cart extends React.Component<Props, State> {
         </Row>
 
         <Column size={12}>
-          <div className="container card col-md-8">
+          <div className="container card col-md-8 border border-5 shadow-lg">
             {redirecting()}
-            <h1 className="display-5 fw-bold text-primary text-center ">
+            <h1 className="fs-3 fw-bold text-light bg-dark text-center ">
               CART LIST
             </h1>
             <table className="table">
@@ -73,21 +67,21 @@ class Cart extends React.Component<Props, State> {
                       <th className="fw-bold display-7" scope="row">
                         {index + 1}
                       </th>
-                      <td className="fw-bold display-7">{data.productId}</td>
+                      <td className=" display-7">{data.productId}</td>
                       <td className="fw-bold display-7">{data.productName}</td>
                       <td className="fw-bold display-7">
-                        INR {data.productSalePrice}
+                        S.Price {data.productSalePrice}
                       </td>
-                      <td>
+                      <td className="d-flex">
                         <button
-                          className="btn btn-success m-1"
+                          className="btn btn-info m-1"
                           onClick={() =>
                             this.props.increamentQty(data.productId)
                           }
                         >
                           +
                         </button>
-                        {data.productQty}
+                        <span className="fw-bold">{data.productQty}</span>
                         <button
                           className="btn btn-danger m-1"
                           onClick={() =>
@@ -98,7 +92,7 @@ class Cart extends React.Component<Props, State> {
                         </button>
                       </td>
                       <td className="fw-bold display-7">
-                        INR {data.productSalePrice * data.productQty}
+                        Total {data.productSalePrice * data.productQty}
                         <p style={{ display: "none" }}>
                           {
                             (TotalAmount =
@@ -109,9 +103,9 @@ class Cart extends React.Component<Props, State> {
                       </td>
 
                       <td>
-                        <div className="mt-5  pb-0 mb-1  rounded ">
+                        <div className="mt-5 pb-0 mb-1 rounded ">
                           <button
-                            className="btn btn-info fw-bold"
+                            className="btn btn-danger fw-bold"
                             onClick={() => {
                               this.props.deleteCartData(data.productId);
                             }}
@@ -125,17 +119,18 @@ class Cart extends React.Component<Props, State> {
                 )}
               </tbody>
             </table>
-            <div className="card-body border border-5 w-50 bg-secondary">
+            <div className="card-body border border-5 border-secondary shadow-lg w-50 bg-secondary">
               <h5 className={"totalProductPrice fw-bold"}>
-                Sub-Total Price: <b className="text-light"> {TotalAmount}</b>
+                Sub-Total : <b className="text-light"> {TotalAmount}</b>
+              </h5>
+              <h5 className="fw-bold">Tax: 00.00</h5>
+              <h5 className={"totalProductPrice fw-bold"}>
+                Total : <b className="text-light"> {TotalAmount}</b>
               </h5>
             </div>
             <br />
-            <NavLink to="/payment">
-              <button
-                className="bg-warning w-50 fw-bold border border-5 border-warning text-light p-1 rounded-3 "
-                onClick={submit}
-              >
+            <NavLink to={"/payment"}>
+              <button className="fas fa-shopping-cart bg-warning w-50 fw-bold shadow-lg border border-5 border-warning text-light p-2 rounded-3 ">
                 CHECK OUT
               </button>
             </NavLink>
