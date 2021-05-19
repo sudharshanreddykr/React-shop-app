@@ -44,7 +44,7 @@ class Register extends React.Component<RegisterProps, RegisterState> {
           emailjs
             .sendForm(
               "service_hya0l49",
-              "template_kke7gse",
+              "template_v9f4ini",
               e.target,
               "user_Rw2lpT67YgUp7iFUhF6iE"
             )
@@ -78,25 +78,33 @@ class Register extends React.Component<RegisterProps, RegisterState> {
             <hr />
 
             <form onSubmit={this.register}>
-              <input
-                placeholder={"Name"}
-                type={"text"}
-                onChange={(e) => this.setState({ name: e.target.value })}
-                name="name"
-              />
-
-              <input
-                placeholder={"Email"}
-                type={"email"}
-                onChange={(e) => this.setState({ email: e.target.value })}
-                name="email"
-              />
-
-              <TextBox
-                placeholder={"Password"}
-                type={"password"}
-                textChange={(password) => this.setState({ password })}
-              />
+              <div className="form-group my 4">
+                <input
+                  placeholder={"Name"}
+                  type={"text"}
+                  onChange={(e) => this.setState({ name: e.target.value })}
+                  name="name"
+                  className={"border border-4 rounded-3 w-100"}
+                />
+              </div>
+              <div className="form-group my-4">
+                <input
+                  placeholder={"Email"}
+                  type={"email"}
+                  onChange={(e) => this.setState({ email: e.target.value })}
+                  name="email"
+                  className={"border border-4 rounded-3 w-100"}
+                />
+              </div>
+              <div className="form-group my 4">
+                {" "}
+                <input
+                  placeholder={"Password"}
+                  type={"password"}
+                  onChange={(e) => this.setState({ password: e.target.value })}
+                  className={"border border-4 rounded-3 w-100"}
+                />
+              </div>
 
               <button className={"btn btn-success w-100"}>REGISTER</button>
             </form>

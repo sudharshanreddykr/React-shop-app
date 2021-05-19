@@ -100,7 +100,7 @@ class Checkout extends React.Component<Props, State> {
                       placeholder={"NameOnCard"}
                       type={"text"}
                       onChange={(Cname) => this.setState({ Cname })}
-                      className="form-control"
+                      className="form-control "
                       required
                     />
                     <input
