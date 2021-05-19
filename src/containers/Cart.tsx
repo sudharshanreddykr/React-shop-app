@@ -1,13 +1,8 @@
-import axios from "axios";
 import React from "react";
 import { connect } from "react-redux";
 import Column from "../components/Column";
 import { CartType, StoreType } from "../types";
-import {
-  NavLink,
-  Redirect,
-  RouteComponentProps,
-} from "react-router-dom";
+import { NavLink, Redirect, RouteComponentProps } from "react-router-dom";
 import Container from "../components/Container";
 import Row from "../components/Row";
 import { Dispatch } from "redux";
@@ -16,26 +11,43 @@ import CartActions from "../store/actions/CartActions";
 type Props = {
   cartItems: CartType[];
   deleteCartData: (id: number) => void;
-  increamentQty: (id: number) => void;
-  decrementQty: (id: number) => void;
+  increaseQty: (id: number) => void;
+  decreaseQty: (id: number) => void;
 } & RouteComponentProps;
 type State = {
   reRender: boolean;
-  totalAmo: number;
+  totalAmount: number;
 };
 
 class Cart extends React.Component<Props, State> {
-  state: State = { reRender: false, totalAmo: 0 };
+  state: State = { reRender: false, totalAmount: 0 };
 
   render() {
-    console.log("total", this.state.totalAmo);
+    const ProductId: any = [];
+    let ProductData: any = [];
+    const datas = this.props.cartItems;
+    let finalProductdata = datas.map((data: any, index: number, arr: any) => {
+      if (ProductId.includes(data.productId) === false) {
+        ProductData.push(data);
+        ProductId.push(data.productId);
+      }
+    });
+
+    console.log("total", this.state.totalAmount);
+
+    const submit = (e: any) => {
+      e.preventDefault();
+      this.setState({
+        reRender: true,
+      });
+    };
     const redirecting = () => {
       if (this.state.reRender === true) {
         return <Redirect to="/checkout" />;
       }
     };
 
-    let TotalAmount: number = 0;
+    let fianlPrice: number = 0;
     return (
       <Container>
         <Row>
@@ -76,7 +88,7 @@ class Cart extends React.Component<Props, State> {
                         <button
                           className="btn btn-info m-1"
                           onClick={() =>
-                            this.props.increamentQty(data.productId)
+                            this.props.increaseQty(data.productId)
                           }
                         >
                           +
@@ -85,18 +97,18 @@ class Cart extends React.Component<Props, State> {
                         <button
                           className="btn btn-danger m-1"
                           onClick={() =>
-                            this.props.decrementQty(data.productId)
+                            this.props.decreaseQty(data.productId)
                           }
                         >
                           -
                         </button>
                       </td>
                       <td className="fw-bold display-7">
-                        Total {data.productSalePrice * data.productQty}
+                        Total : {data.productSalePrice * data.productQty}
                         <p style={{ display: "none" }}>
                           {
-                            (TotalAmount =
-                              TotalAmount +
+                            (fianlPrice =
+                              fianlPrice +
                               data.productSalePrice * data.productQty)
                           }
                         </p>
@@ -121,15 +133,15 @@ class Cart extends React.Component<Props, State> {
             </table>
             <div className="card-body border border-5 border-secondary shadow-lg w-50 bg-secondary">
               <h5 className={"totalProductPrice fw-bold"}>
-                Sub-Total : <b className="text-light"> {TotalAmount}</b>
+                Sub-Total : <b className="text-light"> {fianlPrice}</b>
               </h5>
               <h5 className="fw-bold">Tax: 00.00</h5>
               <h5 className={"totalProductPrice fw-bold"}>
-                Total : <b className="text-light"> {TotalAmount}</b>
+                Total : <b className="text-light"> {fianlPrice}</b>
               </h5>
             </div>
             <br />
-            <NavLink to={"/payment"}>
+            <NavLink to={"/checkout"}>
               <button className="fas fa-shopping-cart bg-warning w-50 fw-bold shadow-lg border border-5 border-warning text-light p-2 rounded-3 ">
                 CHECK OUT
               </button>
@@ -150,8 +162,8 @@ const mapStoreToProps = (state: StoreType) => {
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     deleteCartData: (id: number) => dispatch(CartActions.removeItem(id)),
-    increamentQty: (id: number) => dispatch(CartActions.increaseQty(id)),
-    decrementQty: (id: number) => dispatch(CartActions.decrementQty(id)),
+    increaseQty: (id: number) => dispatch(CartActions.increaseQty(id)),
+    decreaseQty: (id: number) => dispatch(CartActions.decreaseQty(id)),
   };
 };
 export default connect(mapStoreToProps, mapDispatchToProps)(Cart);

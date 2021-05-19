@@ -8,7 +8,6 @@ import { BrowserRouter } from "react-router-dom";
 import Header from "./containers/Header";
 import LoginButtons from "./components/LoginButtons";
 import CartButton from "./components/CartButton";
-import { Payment } from './containers/Payment';
 
 
 type State = {
@@ -30,7 +29,7 @@ class App extends React.Component<{}, State> {
         </Header>
         <ThemeContext.Provider value={theme}>
           <AppRouter />
-          {/* <Payment /> */}
+         
           
           {/* <Demo />
           <ProductList selectedCurrency={this.state.currentCurrency} /> */}

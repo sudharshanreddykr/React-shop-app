@@ -1,11 +1,11 @@
-import React, { SyntheticEvent } from "react";
+import React from "react";
 import { RouteComponentProps } from "react-router";
-import { Redirect } from "react-router-dom";
 import Column from "../components/Column";
 import LoadingWrapper from "../components/LoadingWrapper";
 import Row from "../components/Row";
 import TextBox from "../components/TextBox";
-import UserService from "../services/UserService";
+import emailjs from "emailjs-com";
+import axios from "axios";
 
 type RegisterProps = {
   signinSuccess: (user: object) => void;
@@ -19,36 +19,52 @@ type RegisterState = {
   email: string;
   password: string;
   name: string;
-  errorMessage: string | null;
-  returnName: string;
 };
 
 class Register extends React.Component<RegisterProps, RegisterState> {
   state: RegisterState = {
     email: "",
     password: "",
-    name: "",
-    errorMessage: "",
-    returnName: "",
+    name: ""
   };
 
-  register = async (e: SyntheticEvent) => {
+  register = async (e: any) => {
     try {
       e.preventDefault();
       console.log(e);
-      const { email, password, name } = this.state;
-      const { data } = await UserService.register(email, password, name);
-      console.log(data);
-      this.setState({ returnName: data.name });
+      const user = {
+        name: this.state.name,
+        email: this.state.email,
+        password: this.state.password,
+      };
+      axios.post("http://localhost:5000/auth/register", user).then(
+        (response) => (
+          console.log(response.status === 201),
+          // history.state("/login")
+          emailjs
+            .sendForm(
+              "service_7juyp0m",
+              "template_kke7gse",
+              e.target,
+              "user_Rw2lpT67YgUp7iFUhF6iE"
+            )
+            .then(
+              (result) => {
+                console.log(result.text);
+              },
+              (error) => {
+                console.log(error.text);
+              }
+            )
+        )
+      );
+
+      this.props.history.push("/login");
     } catch (e) {
-      this.setState({ errorMessage: e.message });
+      console.error(e);
     }
   };
   render() {
-    if (this.state.returnName) {
-      return <Redirect to={"/login"} />;
-    }
-
     return (
       <LoadingWrapper>
         <Row>
@@ -60,7 +76,7 @@ class Register extends React.Component<RegisterProps, RegisterState> {
           >
             <h2>Register</h2>
             <hr />
-            <small className="text-danger">{this.state.errorMessage}</small>
+
             <form onSubmit={this.register}>
               <TextBox
                 placeholder={"Name"}
@@ -73,14 +89,15 @@ class Register extends React.Component<RegisterProps, RegisterState> {
                 type={"email"}
                 textChange={(email) => this.setState({ email })}
               />
+
+
               <TextBox
                 placeholder={"Password"}
                 type={"password"}
                 textChange={(password) => this.setState({ password })}
               />
-              <button className={"btn btn-success w-100"}>
-                REGISTER
-              </button>
+
+              <button className={"btn btn-success w-100"}>REGISTER</button>
             </form>
           </Column>
         </Row>

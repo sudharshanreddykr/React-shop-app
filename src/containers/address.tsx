@@ -1,22 +1,16 @@
-import React, { SyntheticEvent, Fragment } from "react";
+import React, { SyntheticEvent} from "react";
 import { Redirect, RouteComponentProps } from "react-router";
 import Column from "../components/Column";
 import Row from "../components/Row";
-import ProductService from "../services/ProductService";
-import ErrorBoundary from "../components/ErrorBoundary";
-import ImageWithFallback from "../components/ImageWithFallback";
 import TextBox from "../components/TextBox";
-import { NavLink } from "react-router-dom";
 import UserService from "../services/UserService";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import LoadingActions from "../store/actions/LoadingActions";
 import UserActions from "../store/actions/UserActions";
 import formatter from "../utils/formatter";
-import LoadingWrapper from "../components/LoadingWrapper";
 import { StoreType } from "../types";
 import Container from "../components/Container";
-
 
 type RegisterProps = {
   addressError: (error: string) => void;
@@ -73,7 +67,7 @@ class Add extends React.Component<RegisterProps> {
   render() {
     const redirecting = () => {
       if (this.state.redirect === true) {
-        return <Redirect to="/payment" />;
+        return <Redirect to="/profile" />;
       }
     };
     console.log("state data", this.state);
@@ -85,13 +79,12 @@ class Add extends React.Component<RegisterProps> {
               <h1 className="text-center">Add Address</h1>
               <small className="text-danger">{this.props.errorMessage}</small>
               <div className="card-body">
-                <form onSubmit={this.submitData} >
+                <form onSubmit={this.submitData}>
                   {redirecting()}
                   <TextBox
                     placeholder={"Address1"}
                     type={"text"}
-                    textChange={ ( line1 ) => this.setState( { line1 } ) }
-                    
+                    textChange={(line1) => this.setState({ line1 })}
                   />
                   <TextBox
                     placeholder={"Address2"}
@@ -112,13 +105,11 @@ class Add extends React.Component<RegisterProps> {
                     placeholder={"Pincode"}
                     type={"text"}
                     textChange={(pincode) => this.setState({ pincode })}
-                    
                   />
-                  
+
                   <button className={"btn btn-dark w-100 text-uppercase"}>
                     Add
                   </button>
-                  
                 </form>
               </div>
             </div>
@@ -135,7 +126,7 @@ const mapStoreDataToProps = (storeData: StoreType) => {
 };
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-   // addressError: (err: string) => dispatch(UserActions.addressError(err)),
+    addressError: (err: string) => dispatch(UserActions.addressError(err)),
     hideLoader: () => dispatch(LoadingActions.hideLoader()),
     showLoader: () => dispatch(LoadingActions.showLoader()),
   };

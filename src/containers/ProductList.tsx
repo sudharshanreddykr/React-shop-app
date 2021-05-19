@@ -130,7 +130,7 @@ class ProductList extends React.PureComponent<Props, State> {
             <Column size={4} classes={"offset-md-2 text-center"}>
               <AirbnbSlider
                 ThumbComponent={AirbnbThumbComponent}
-                getAriaLabel={(index:any) =>
+                getAriaLabel={(index: any) =>
                   index === 0 ? "Minimum price" : "Maximum price"
                 }
                 defaultValue={[20, 40]}
@@ -143,21 +143,21 @@ class ProductList extends React.PureComponent<Props, State> {
                 {this.state.value[0]}-{this.state.value[1]}
               </h5>
             </Column>
-            <Column size={4} classes={"offset-md-1"}>
+            <Column size={4} classes={"offset-md-1 "}>
               <select
                 name="sort"
                 id="sort"
                 onChange={this.sort}
-                className="form-select selectpicker"
+                className="form-select selectpicker bg-secondary"
                 aria-label="Default select example"
               >
                 <option value="" selected>
-                  SORT 
+                  SORT
                 </option>
                 <option value="PriceLowToHigh">Price Low High</option>
                 <option value="PriceHighToLow">Price High Low</option>
                 <option value="NameLowToHigh">Name Low High</option>
-                <option value="NameHighToLow">Name High  Low</option>
+                <option value="NameHighToLow">Name High Low</option>
               </select>
             </Column>
           </Row>

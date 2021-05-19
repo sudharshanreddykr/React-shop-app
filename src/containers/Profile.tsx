@@ -1,4 +1,3 @@
-import { Icon } from "@material-ui/core";
 import axios from "axios";
 import React from "react";
 import { NavLink } from "react-router-dom";
@@ -13,47 +12,46 @@ type State = {
   profileData: any;
   address: any;
   delAddress: any;
-  
 };
-
-
-
 class Profile extends React.Component<Props, State> {
-  state: State = { profileData: [], address:[], delAddress:[] };
-  
+  state: State = { profileData: [], address: [], delAddress: [] };
+
   async componentDidMount() {
     try {
       const { data } = await UserService.profile();
-      this.setState( {
+      this.setState({
         profileData: data,
         address: data.address,
-     })
-      
+      });
     } catch (e) {
       console.log(e);
     }
-  } async getData () {
-    const { data } = await UserService.profile();
-    this.setState( {
-      address: data.address
-    })
   }
-  render () {
-    console.log( this.state.address )
+  async getData() {
+    const { data } = await UserService.profile();
+    this.setState({
+      address: data.address,
+    });
+  }
+  render() {
+    console.log(this.state.address);
     console.log(this.state.profileData);
-    const delAddress = ( e: any ) => {
+    const delAddress = async (e: any) => {
+      window.confirm("Confirm to delete the Address");
       let delAddressId = e.target.value;
 
-      return StorageService.getData( "token" ).then( ( token ) =>
-        axios.delete( ` http://localhost:5000/address/${ delAddressId }`, {
-        headers: {Authorization: `Bearer ${token}`},
-        } )
-        .then(()=> {
-          this.getData();
-          console.log("data deleted");
-        }).catch(err=> console.log(err))
-      )
-    }
+      return StorageService.getData("token").then((token) =>
+        axios
+          .delete(` http://localhost:5000/address/${delAddressId}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          .then(() => {
+            this.getData();
+            console.log("data deleted");
+          })
+          .catch((err) => console.log(err))
+      );
+    };
     return (
       <Container>
         <Row>
@@ -63,10 +61,14 @@ class Profile extends React.Component<Props, State> {
             </div>
             <div className="card align-items-center border border-5 fs-6 shadow-lg ">
               <div className="imgfallback ">
-                <ImageWithFallback
-                  source="https://icons-for-free.com/iconfiles/png/512/avatar+human+people+profile+user+icon-1320168139431219590.png"
-                  classes="card-img-top img-responsive"
-                />
+                <NavLink to={"/imageupload"}>
+                  <ImageWithFallback
+                    source="https://pic.onlinewebfonts.com/svg/img_212915.png"
+                    // type={ "file" }
+                    // accept="image/*"
+                    classes="card-img-top img-responsive"
+                  />
+                </NavLink>
               </div>
               <ul className="list-group list-group-flush fs-5 align-items-start">
                 <li className="list-group-item ">
@@ -112,8 +114,11 @@ class Profile extends React.Component<Props, State> {
                   </li>
                 ))}
                 <NavLink to={"/address"}>
-                  <button type="button" className="btn btn-primary btn-sm">
-                    Update
+                  <button
+                    type="button"
+                    className="btn btn-primary fw-bold btn-sm"
+                  >
+                    Add ADDRESS
                   </button>
                 </NavLink>
                 <li className="list-group-item">
@@ -127,6 +132,5 @@ class Profile extends React.Component<Props, State> {
     );
   }
 }
-
 
 export default Profile;

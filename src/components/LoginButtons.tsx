@@ -1,6 +1,6 @@
 import { Avatar } from "@material-ui/core";
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector, useStore } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
 import StorageService from "../services/StorageService";
 import UserActions from "../store/actions/UserActions";
@@ -9,10 +9,14 @@ import CartButton from "./CartButton";
 
 
 const LoginButtons: React.FC = (props) => {
-  // const store = useStore<StoreType>();
+  const store = useStore<StoreType>();
   const auth = useSelector((store: StoreType) => !!store.userSession.user);
   const dispatch = useDispatch();
   const history = useHistory();
+  const reload = () => {
+    window.location.reload();
+    window.location.replace("http://localhost:3000/login")
+  }
   if (auth) {
     return (
       <>
@@ -24,7 +28,9 @@ const LoginButtons: React.FC = (props) => {
           className="btn btn-sm btn-outline-primary mx-2"
           onClick={() => {
             StorageService.clearAll();
-            dispatch(UserActions.logout());
+            reload();
+            dispatch( UserActions.logout() );
+            StorageService.clearAll();
             history.push("/"); // redirect
           }}
         >
