@@ -20,10 +20,12 @@ const LoginButtons: React.FC = (props) => {
   if (auth) {
     return (
       <>
+        
         <CartButton />
         <Link className="btn btn-link" to={"/profile"}>
           <Avatar src="/broken-image.jpg"  />
         </Link>
+        <Link to={"/orders"}>orders</Link>
         <button
           className="btn btn-sm btn-outline-primary mx-2"
           onClick={() => {
