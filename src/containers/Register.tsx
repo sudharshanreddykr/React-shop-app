@@ -25,7 +25,7 @@ class Register extends React.Component<RegisterProps, RegisterState> {
   state: RegisterState = {
     email: "",
     password: "",
-    name: ""
+    name: "",
   };
 
   register = async (e: any) => {
@@ -43,7 +43,7 @@ class Register extends React.Component<RegisterProps, RegisterState> {
           // history.state("/login")
           emailjs
             .sendForm(
-              "service_7juyp0m",
+              "service_hya0l49",
               "template_kke7gse",
               e.target,
               "user_Rw2lpT67YgUp7iFUhF6iE"
@@ -78,18 +78,19 @@ class Register extends React.Component<RegisterProps, RegisterState> {
             <hr />
 
             <form onSubmit={this.register}>
-              <TextBox
+              <input
                 placeholder={"Name"}
                 type={"text"}
-                textChange={(name) => this.setState({ name })}
+                onChange={(e) => this.setState({ name: e.target.value })}
+                name="name"
               />
 
-              <TextBox
+              <input
                 placeholder={"Email"}
                 type={"email"}
-                textChange={(email) => this.setState({ email })}
+                onChange={(e) => this.setState({ email: e.target.value })}
+                name="email"
               />
-
 
               <TextBox
                 placeholder={"Password"}

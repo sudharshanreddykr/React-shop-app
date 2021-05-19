@@ -10,13 +10,12 @@ import Demo from "./Demo";
 import Cart from "./containers/Cart";
 import Register from "./containers/Register";
 import address from "./containers/address";
-import { ImageUpload } from "./containers/ImageUpload";
-import CvUpload from "./containers/CvUpload";
 import Checkout from "./containers/Checkout";
+import ImageUpload from "./containers/ImageUpload";
 
 const LazyProfile = React.lazy(() => import("./containers/Profile"));
 
-const AppRouter: React.FC = (props) => {
+const AppRouter: React.FC = () => {
   return (
     <main>
       <Container fluid>
@@ -32,9 +31,6 @@ const AppRouter: React.FC = (props) => {
             <Route path={"/checkout"} component={Checkout}></Route>
             <Route path={ "/address" } component={ address } />
             <Route path={ "/imageupload" } component={ ImageUpload } />
-            <Route path={ "/cvupload" } component={ CvUpload } />
-            
-
             {/* 404 Route */}
             <Route component={ErrorPage} />
           </Switch>

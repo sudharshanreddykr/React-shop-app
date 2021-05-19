@@ -1,22 +1,54 @@
-import React, { SyntheticEvent } from "react";
-import Column from "../components/Column";
+import React, { PureComponent } from "react";
+import axios from "axios";
 
-export class ImageUpload extends React.Component{
-    render () {
-   const submitHandler = async ( e: SyntheticEvent ) => {
-            try {
-                e.preventDefault();
-            } catch(e) {}
-        }
+type Props = {};
+type State = {
+  profileImg: any;
+  file: any;
+};
+class ImageUpload extends PureComponent<Props, State> {
+  state: State = {
+    profileImg: "",
+    file: File,
+  };
 
-        return (
-            <Column size={6} classes={"offset-3"}>
-                <form onSubmit={ submitHandler }>
-                    <h4 className="bg-dark text-light w-100 fw-bold text-center">Upload Profile Image</h4>
-            <input className="form-control" type="file" accept="image/*" />
-            <button className="btn btn-primary fw-bold">Upload Image</button>
+  onSubmit(e: any) {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("profileImg", this.state.profileImg);
+    axios
+      .post("http://localhost:5000/auth/upload", formData)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((e) => console.log(e));
+  }
+  render() {
+    return (
+      <div className="container">
+        <div className="row">
+          <form onSubmit={this.onSubmit}>
+            <div className="form-group">
+              <input
+                type="file"
+                name="file"
+                onChange={(e: any) =>
+                  this.setState({
+                    profileImg: e.target.files[0],
+                  })
+                }
+              />
+            </div>
+            <div className="form-group">
+              <button className="btn btn-primary" type="submit">
+                Upload
+              </button>
+            </div>
           </form>
-            </Column>
-        );
-    }
+        </div>
+      </div>
+    );
+  }
 }
+export default ImageUpload;

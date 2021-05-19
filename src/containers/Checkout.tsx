@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { RouteComponentProps } from "react-router";
 import Column from "../components/Column";
 import { CartType, StoreType } from "../types";
-import {  Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import Container from "../components/Container";
 import Row from "../components/Row";
 import UserService from "../services/UserService";
@@ -51,16 +51,12 @@ class Checkout extends React.Component<Props, State> {
 
   render() {
     console.log();
-    const submitHandler = async ( e: any ) => {
+    const submitHandler = async (e: any) => {
       e.preventDefault();
-       this.props.resetCart();
+      this.props.resetCart();
       alert("Payment Done Successfully ");
       const { Cname, cardNo, cvv } = this.state;
-      const payment = await UserService.paymentPost(
-        Cname,
-        cardNo,
-        cvv
-      );
+      const payment = await UserService.paymentPost(Cname, cardNo, cvv);
 
       this.setState({
         // reRender: true,
@@ -73,7 +69,6 @@ class Checkout extends React.Component<Props, State> {
     };
 
     let finalPrice: number = 0;
-    let discount = Math.floor(Math.random() * 100) + 1;
     const data = this.props.cartItems.map((val: any) => {
       {
         finalPrice = finalPrice + val.productSalePrice * val.productQty;
@@ -96,12 +91,15 @@ class Checkout extends React.Component<Props, State> {
               <Row>
                 <Column size={5} classes="bg-light">
                   <h4 className="text-center fw-bold">Payment</h4>
-                  <form onSubmit={submitHandler} className="border border-5 card">
+                  <form
+                    onSubmit={submitHandler}
+                    className="border border-5 card"
+                  >
                     {redirect()}
                     <input
                       placeholder={"NameOnCard"}
                       type={"text"}
-                      onChange={(Cname ) => this.setState({ Cname })}
+                      onChange={(Cname) => this.setState({ Cname })}
                       className="form-control"
                       required
                     />
@@ -157,13 +155,10 @@ class Checkout extends React.Component<Props, State> {
                   <br /> <br />
                   <div className="w-auto card-header border border-5 border-light">
                     <h5 className="m-3 fw-bold">Sub-Total: {finalPrice}</h5>
-                    <h5 className="m-3 text-success">Discount : -{discount}</h5>
+                    <h5 className="m-3 text-success">Discount :0 </h5>
                     <h5 className="m-3 text-success">Offer: </h5>
                     <h3 className="m-3 fw-bold">
-                      Total :{" "}
-                      <span className="text-primary">
-                        {finalPrice - discount}
-                      </span>{" "}
+                      Total : <span className="text-primary">{finalPrice}</span>{" "}
                     </h3>
                   </div>
                 </Column>
@@ -186,6 +181,5 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     resetCart: () => dispatch(CartActions.resetCart()),
   };
 };
-
 
 export default connect(mapStoreToProps, mapDispatchToProps)(Checkout);
