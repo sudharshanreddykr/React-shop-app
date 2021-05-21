@@ -23,7 +23,7 @@ type RegisterState = {
   line2: string;
   city: string;
   state: string;
-  pincode: any;
+  pincode: number;
   redirect: boolean;
 };
 class Add extends React.Component<RegisterProps> {
@@ -32,7 +32,7 @@ class Add extends React.Component<RegisterProps> {
     line2: "",
     city: "",
     state: "",
-    pincode: "",
+    pincode: 0,
     redirect: false,
   };
   submitData = async (e: SyntheticEvent) => {

@@ -12,7 +12,7 @@ import Register from "./containers/Register";
 import address from "./containers/address";
 import Checkout from "./containers/Checkout";
 import ImageUpload from "./containers/ImageUpload";
-import OrderItems from './components/OrderItems';
+import OrderDetails from "./components/OrderDetails";
 
 const LazyProfile = React.lazy(() => import("./containers/Profile"));
 
@@ -32,7 +32,7 @@ const AppRouter: React.FC = () => {
             <Route path={"/checkout"} component={Checkout}></Route>
             <Route path={"/address"} component={address} />
             <Route path={"/imageupload"} component={ImageUpload} />
-            <Route path={"/orders"} component={OrderItems} />
+            <Route path={"/orderdetails"} component={OrderDetails} />
             {/* 404 Route */}
             <Route component={ErrorPage} />
           </Switch>
