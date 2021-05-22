@@ -25,7 +25,7 @@ const LoginButtons: React.FC = (props) => {
         <Link className="btn btn-link" to={"/profile"}>
           <Avatar src="/broken-image.jpg"  />
         </Link>
-        <Link to={"/orders"}>orders</Link>
+        <Link to={"/orderdetails"}>orders</Link>
         <button
           className="btn btn-sm btn-outline-primary mx-2"
           onClick={() => {
