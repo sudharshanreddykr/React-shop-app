@@ -1,4 +1,3 @@
-import { StoreType } from "./../../types";
 import { Action } from "redux";
 import { UserSessionType } from "../../types";
 import UserActions from "../actions/UserActions";
@@ -6,9 +5,8 @@ import UserActions from "../actions/UserActions";
 interface IAction extends Action {
   user?: object;
   error?: string;
-  store?: StoreType;
 }
-const initialState: UserSessionType = { user: null, error: null, store: null };
+const initialState: UserSessionType = { user: null, error: null };
 function userReducer(
   storeData: UserSessionType = initialState,
   action: IAction

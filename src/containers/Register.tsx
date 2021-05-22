@@ -21,7 +21,6 @@ type RegisterState = {
   email: string;
   password: string;
   name: string;
-  mobile: number;
 };
 
 class Register extends React.Component<RegisterProps, RegisterState> {
@@ -29,7 +28,6 @@ class Register extends React.Component<RegisterProps, RegisterState> {
     email: "",
     password: "",
     name: "",
-    mobile: 0,
   };
 
   register = async (e: any) => {
@@ -40,7 +38,6 @@ class Register extends React.Component<RegisterProps, RegisterState> {
         name: this.state.name,
         email: this.state.email,
         password: this.state.password,
-        mobile: this.state.mobile,
       };
       axios.post("http://localhost:5000/auth/register", user).then(
         (response) => (
@@ -50,7 +47,7 @@ class Register extends React.Component<RegisterProps, RegisterState> {
               "service_6hrp3ix",
               "template_v9f4ini",
               e.target,
-              "user_Rw2lpT67YgUp7iFUhF6iE"
+              "user_Rw2lpT67YgUp7iFUhF6iET"
             )
             .then(
               (result) => {

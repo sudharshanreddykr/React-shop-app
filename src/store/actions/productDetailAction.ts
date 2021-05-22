@@ -1,6 +1,6 @@
 import { ProductType } from "../../types";
 const ActionTypes = {
-  ADD_TO_PRODUCTDETAIL: "[PRODUCTDETAIL] add productdeatil",
+  ADD_TO_PRODUCTDETAIL: "[PRODUCTDETAIL] add productdetail",
 };
 const addToProductDetail = (product: ProductType) => {
   return {
