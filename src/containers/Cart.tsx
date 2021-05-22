@@ -1,169 +1,159 @@
-import React from "react";
+import React, { PureComponent } from "react";
 import { connect } from "react-redux";
+import { NavLink, RouteComponentProps } from "react-router-dom";
 import Column from "../components/Column";
-import { CartType, StoreType } from "../types";
-import { NavLink, Redirect, RouteComponentProps } from "react-router-dom";
-import Container from "../components/Container";
+
 import Row from "../components/Row";
+
+import { CartType, StoreType } from "../types";
+
+import Container from "../components/Container";
+
 import { Dispatch } from "redux";
 import CartActions from "../store/actions/CartActions";
 
+import CartItem from "../components/CartItem";
+import OrderService from "../services/OrderService";
+
 type Props = {
-  cartItems: CartType[];
-  deleteCartData: (id: number) => void;
-  increaseQty: (id: number) => void;
-  decreaseQty: (id: number) => void;
+  cart: CartType[];
+  count: number;
+  removeItem: (id: number) => void;
+  increamentQty: (id: number) => void;
+  decrementQty: (id: number) => void;
+
+  // btnClick: () => void;
 } & RouteComponentProps;
 type State = {
-  reRender: boolean;
-  totalAmount: number;
+  qty: number;
+  amount: number;
+  productId: number;
+  sDate: string;
+  orderId: number;
 };
+class Cart extends PureComponent<Props, State> {
+  state: State = {
+    amount: 0,
+    qty: 0,
+    productId: 0,
+    orderId: 0,
+    sDate: "2022/11/12",
+  };
+  async componentDidMount() {}
+  async addOrder() {
+    try {
+      const { amount, productId, qty, sDate, orderId } = this.state;
+      const order = await OrderService.createOrder(
+        amount,
+        productId,
+        sDate,
+        qty
+      );
 
-class Cart extends React.Component<Props, State> {
-  state: State = { reRender: false, totalAmount: 0 };
-
-  render() {
-    const ProductId: any = [];
-    let ProductData: any = [];
-    const datas = this.props.cartItems;
-    let finalProductdata = datas.map((data: any, index: number, arr: any) => {
-      if (ProductId.includes(data.productId) === false) {
-        ProductData.push(data);
-        ProductId.push(data.productId);
-      }
-    });
-
-    console.log("total", this.state.totalAmount);
-
-    const submit = (e: any) => {
-      e.preventDefault();
       this.setState({
-        reRender: true,
+        amount,
+        productId,
+        sDate,
+        qty,
       });
-    };
-    const redirecting = () => {
-      if (this.state.reRender === true) {
-        return <Redirect to="/checkout" />;
-      }
-    };
+      console.log(order);
+      console.log(qty);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
-    let fianlPrice: number = 0;
+  // remove(id: number): void {
+  //   this.props.removeItem(id); // add to cart logic
+
+  //   //this.props.history.push("/cart"); // redirect to cart page
+  // }
+
+  removeFormCart(id: number) {
+    this.props.removeItem(id); // add to cart logic
+    //this.props.history.push("/cart"); // redirect to cart page
+  }
+  render() {
+    let Total = 0;
+    let discount = Math.floor(Math.random() * 100) + 1;
     return (
       <Container>
         <Row>
-          <Column size={8}>
-            <div className="jumbotron text-center"></div>
+          <Column size={12}>
+            <div className="jumbotron text-center">
+              <h1 className="display-5 fw-bold">Cart Item</h1>
+            </div>
+          </Column>
+        </Row>
+        <Row>
+          {this.props.cart.map((val: any, index: number) => (
+            <>
+              <CartItem
+                odata={val}
+                btnClick={() => this.props.removeItem(val.productId)}
+                incClick={() => this.props.increamentQty(val.productId)}
+                decClick={() => this.props.decrementQty(val.productId)}
+              />
+              <p style={{ display: "none" }}>
+                {(Total = Total + val.productSalePrice * val.productQty)}
+                {
+                  (this.state.amount =
+                    Number(val.productSalePrice) * val.productQty)
+                }
+                {(this.state.productId = val.productId)}
+                {(this.state.qty = val.productQty)}
+              </p>
+            </>
+          ))}
+          <Column size={4} classes={"offset-md-1 position-fixed top-40 end-0"}>
+            <div className="d-flex justify-content-between align-items-center shadow shadow-lg">
+              <div className="">
+                <h5 className="m-3">Price</h5>
+                <h5 className="m-3">Disscount</h5>
+                <h5 className="m-3 border-bottom">Delivery Charges</h5>
+
+                <h5 className="m-3">TotalAmount</h5>
+              </div>
+              <div className="">
+                <h5 className="m-3">{Total}</h5>
+                <h5 className="m-3 text-success"> -{discount}</h5>
+                <h5 className="m-3 text-success border-bottom">FREE</h5>
+
+                <h5 className="m-3 ">{Total - discount}</h5>
+              </div>
+            </div>
           </Column>
         </Row>
 
-        <Column size={12}>
-          <div className="container card col-md-8 border border-5 shadow-lg">
-            {redirecting()}
-            <h1 className="fs-3 fw-bold text-light bg-dark text-center ">
-              CART LIST
-            </h1>
-            <table className="table">
-              <tbody>
-                {this.props.cartItems.map((data: any, index: number) =>
-                  data.productQty > 0 ? (
-                    <tr key={data.productId}>
-                      <div className="">
-                        <td>
-                          <img
-                            src={data.productImage}
-                            className="col-md-3"
-                            alt="img"
-                          />
-                        </td>
-                      </div>
-                      <th className="fw-bold display-7" scope="row">
-                        {index + 1}
-                      </th>
-                      <td className=" display-7">{data.productId}</td>
-                      <td className="fw-bold display-7">{data.productName}</td>
-                      <td className="fw-bold display-7">
-                        S.Price {data.productSalePrice}
-                      </td>
-                      <td className="d-flex">
-                        <button
-                          className="btn btn-info m-1"
-                          onClick={() =>
-                            this.props.increaseQty(data.productId)
-                          }
-                        >
-                          +
-                        </button>
-                        <span className="fw-bold">{data.productQty}</span>
-                        <button
-                          className="btn btn-danger m-1"
-                          onClick={() =>
-                            this.props.decreaseQty(data.productId)
-                          }
-                        >
-                          -
-                        </button>
-                      </td>
-                      <td className="fw-bold display-7">
-                        Total : {data.productSalePrice * data.productQty}
-                        <p style={{ display: "none" }}>
-                          {
-                            (fianlPrice =
-                              fianlPrice +
-                              data.productSalePrice * data.productQty)
-                          }
-                        </p>
-                      </td>
-
-                      <td>
-                        <div className="mt-5 pb-0 mb-1 rounded ">
-                          <button
-                            className="btn btn-danger fw-bold"
-                            onClick={() => {
-                              this.props.deleteCartData(data.productId);
-                            }}
-                          >
-                            <i className="fas fa-trash display-7"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ) : null
-                )}
-              </tbody>
-            </table>
-            <div className="card-body border border-5 border-secondary shadow-lg w-50 bg-secondary">
-              <h5 className={"totalProductPrice fw-bold"}>
-                Sub-Total : <b className="text-light"> {fianlPrice}</b>
-              </h5>
-              <h5 className="fw-bold">Tax: 00.00</h5>
-              <h5 className={"totalProductPrice fw-bold"}>
-                Total : <b className="text-light"> {fianlPrice}</b>
-              </h5>
-            </div>
-            <br />
+        <Row>
+          <Column size={12}>
             <NavLink to={"/checkout"}>
-              <button className="fas fa-shopping-cart bg-warning w-50 fw-bold shadow-lg border border-5 border-warning text-light p-2 rounded-3 ">
-                CHECK OUT
+              <button
+                onClick={() => {
+                  this.addOrder();
+                }}
+                className="bg-primary border border-3 rounded-3  fw-bold  fs-3 text-light text-center p-2 w-100 align-items-start shadow-lg float-end"
+              >
+                Check Out
               </button>
             </NavLink>
-            <br />
-          </div>
-        </Column>
+          </Column>
+        </Row>
       </Container>
     );
   }
 }
 
-const mapStoreToProps = (state: StoreType) => {
+const mapStateToProps = (state: StoreType) => {
   return {
-    cartItems: state.cart,
+    cart: state.cart,
   };
 };
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    deleteCartData: (id: number) => dispatch(CartActions.removeItem(id)),
-    increaseQty: (id: number) => dispatch(CartActions.increaseQty(id)),
-    decreaseQty: (id: number) => dispatch(CartActions.decreaseQty(id)),
+    removeItem: (id: number) => dispatch(CartActions.removeItem(id)),
+    increamentQty: (id: number) => dispatch(CartActions.increaseQty(id)),
+    decrementQty: (id: number) => dispatch(CartActions.decrementQty(id)),
   };
 };
-export default connect(mapStoreToProps, mapDispatchToProps)(Cart);
+export default connect(mapStateToProps, mapDispatchToProps)(Cart);

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 type Props = {
   label?: string;
-  type: "text" | "password" | "email" | "number" ;
+  type: "text" | "password" | "email";
   textChange: (value: string) => void;
   placeholder?: string;
 };

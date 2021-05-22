@@ -6,16 +6,7 @@ const ActionTypes = {
   INCREAMENT: "[Cart] Increament",
   DECREMENT: "[Cart]  Decrement",
   RESECART: "[Cart]  Resecart",
-
-
-
-
 };
-const resetCart = () => {
-return {
-type: ActionTypes.RESECART,
-}
-}
 
 const addToCart = (product: ProductType) => {
   return {
@@ -29,24 +20,28 @@ const removeItem = (id: number) => {
     id,
   };
 };
-
 const increaseQty = (qtyId: number) => {
   return {
     type: ActionTypes.INCREAMENT,
     qtyId,
-  }
-}
-const decreaseQty = (id: number) => {
+  };
+};
+const decrementQty = (qtyId: number) => {
   return {
     type: ActionTypes.DECREMENT,
-    id,
-  }
-}
+    qtyId,
+  };
+};
+const resetCart = () => {
+  return {
+    type: ActionTypes.RESECART,
+  };
+};
 export default {
   ActionTypes,
   addToCart,
   removeItem,
   increaseQty,
-  decreaseQty,
-  resetCart
+  decrementQty,
+  resetCart,
 };

@@ -13,11 +13,11 @@ type Props = {
   count: number;
 } & RouteComponentProps;
 type State = {
-  orderData: ProductType[];
+  data: ProductType[];
 };
 class ProductDetail extends React.Component<Props, State, RouteComponentProps> {
   state: State = {
-    orderData: [],
+    data: [],
   };
   async componentDidMount(): Promise<void> {
     try {
@@ -26,7 +26,7 @@ class ProductDetail extends React.Component<Props, State, RouteComponentProps> {
 
       console.log("success", data);
       this.setState({
-        orderData: [data],
+        data: [data],
       });
     } catch (e) {
       console.log("error", e);
@@ -36,33 +36,24 @@ class ProductDetail extends React.Component<Props, State, RouteComponentProps> {
     return (
       <ErrorBoundary>
         <Row>
-          <div className="header fs-3 fw-bold bg-dark text-light col-6 offset-3 text-center">Product Details</div>
-          {this.state.orderData.map((val) => (
+          {this.state.data.map((val) => (
             <Column
               size={9}
-              classes="offset-md-1 mt-5 d-flex text-left align-items-center shadow-lg border border-3 fw-bold fs-3"
+              classes="offset-md-1 d-flex text-center align-items-center  shadow-lg border border-3  text-dark bg-gradient"
             >
               <ImageWithFallback
                 source={val.productImage}
-                classes={"img-thumbnail"}
+                classes={"img-thumbnail  w-50 h-75"}
               />
               <div className="ms-4">
-                <h4 className="mb-5">
-                  ProductName :
-                  <span className="text-info">{val.productName}</span>
-                </h4>
-                <h4 className="bd-highlight mt-2 mb-5">
-                  ProductPrice :
-                  <span className="text-info">{val.productPrice}</span>
+                <h4 className="mb-5"> ProductName : {val.productName}</h4>
+                <h4 className="bg-highlight mt-2 mb-5">
+                  ProductPrice : {val.productPrice}
                 </h4>
                 <h4 className="mt-2 mb-5">
-                  ProductSalePrice :
-                  <span className="text-info">{val.productSalePrice}</span>
+                  ProductSalePrice : {val.productSalePrice}
                 </h4>
-                <h4 className="mt-2">
-                  ProductStock :{" "}
-                  <span className="text-info">{val.productStock}</span>
-                </h4>
+                <h4 className="mt-2">ProductStock : {val.productStock}</h4>
               </div>
             </Column>
           ))}

@@ -6,7 +6,7 @@ type State = {
   profileImg: any;
   file: any;
 };
-class ImageUpload extends PureComponent<Props, State> {
+class FileUpload extends PureComponent<Props, State> {
   state: State = {
     profileImg: "",
     file: File,
@@ -51,4 +51,4 @@ class ImageUpload extends PureComponent<Props, State> {
     );
   }
 }
-export default ImageUpload;
+export default FileUpload;

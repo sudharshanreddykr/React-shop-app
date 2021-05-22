@@ -1,16 +1,16 @@
-import axios from "axios";
 import React from "react";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import { RouteComponentProps } from "react-router";
 import Column from "../components/Column";
 import { CartType, StoreType } from "../types";
-import { Redirect } from "react-router-dom";
+
 import Container from "../components/Container";
 import Row from "../components/Row";
 import UserService from "../services/UserService";
-import TextBox from "../components/TextBox";
+
 import CartActions from "../store/actions/CartActions";
+import PaymentService from "../services/PaymentService";
 
 type Props = {
   cartItems: CartType[];
@@ -20,32 +20,20 @@ type Props = {
   resetCart: () => void;
 } & RouteComponentProps;
 type State = {
-  reRender: boolean;
-  cardUName: string;
+  cardName: any;
   cardNo: any;
-  // expiration: string;
   cvv: any;
-  amount: number;
-  qty: number;
-  OSDate: number;
-  productId: number;
   userList: any;
   addressData: any;
+  Amount: number;
 };
 
 class Checkout extends React.Component<Props, State> {
   state: State = {
-    reRender: false,
-    cardUName: "",
-    cardNo: "",
-    // expiration: "",
-    cvv: "",
-
-    amount: 0,
-    qty: 0,
-    OSDate: 0,
-    productId: 0,
-
+    cardName: "",
+    cardNo: 0,
+    cvv: 0,
+    Amount: 0,
     userList: [],
     addressData: [],
   };
@@ -63,158 +51,150 @@ class Checkout extends React.Component<Props, State> {
     }
   }
 
-  async orders() {
-    try {
-      const { amount, qty, OSDate, productId } = this.state;
-      const orderproduct = await UserService.orderPost(
-        amount,
-        qty,
-        OSDate,
-        productId
-      );
-      this.setState({
-        reRender: true,
-        amount: this.state.amount,
-        qty: this.state.qty,
-        OSDate: this.state.OSDate,
-        productId: this.state.productId,
-      });
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
   render() {
-    console.log("orderamount", this.state.amount);
-    console.log("orderProduct", this.state.productId);
+    let total = 0;
+    console.log();
     const submit = async (e: any) => {
       e.preventDefault();
       this.props.resetCart();
       alert("Payment Done Successfully ");
-      const { cardUName, cardNo, cvv } = this.state;
-      const payment = await UserService.paymentPost(
-        cardUName,
+      const { Amount, cardName, cardNo, cvv } = this.state;
+      const payment = await PaymentService.paymentPost(
+        cardName,
         cardNo,
-        // expiration,
+        Amount,
         cvv
       );
 
       this.setState({
-        cardUName: this.state.cardUName,
+        Amount: this.state.Amount,
+        cardName: this.state.cardName,
         cardNo: this.state.cardNo,
-        // expiration: this.state.expiration,
         cvv: this.state.cvv,
+
         userList: data,
       });
     };
 
-    let finalData: number = 0;
-    const data = this.props.cartItems.map((val: any) => (
-      <p style={{ display: "none" }}>
-        {(finalData = finalData + val.productSalePrice * val.productQty)}
-
-        {(this.state.amount = val.productSalePrice * val.productQty)}
-        {(this.state.productId = val.productId)}
-        {(this.state.qty = val.productQty)}
-      </p>
-    ));
-
-    const redirecting = () => {
-      if (this.state.reRender === true) {
-        return <Redirect to="/orderDetails" />;
+    const data = this.props.cartItems.map((val: any) => {
+      {
+        total = total + Number(val.productSalePrice) * val.productQty;
+        this.state.Amount = total;
       }
-    };
+    });
+
     return (
       <>
         <Container>
           <Row>
             <Column size={12}>
-              <h2 className=" text-dark fw-bold fs-3 p-2 text-center mb-3">
+              <h2 className="  text-dark fw-bold fs-3 p-2 text-center   mb-3">
                 Billing Details
               </h2>
               <Row>
-                <Column size={5} classes="bg-light">
-                  <div className="mx-auto my-3">
-                    <img src="./card1.jpg" alt="" className="w-25" />
-                  </div>
+                <Column size={6} classes="bg-light">
                   <h1 className="text-center fw-bold">Payment</h1>
                   <form action="" onSubmit={submit}>
-                    {redirecting()}
-                    <TextBox
-                      placeholder={"CardName"}
-                      type={"text"}
-                      textChange={(cardUName) => this.setState({ cardUName })}
-                    />
-                    <TextBox
-                      placeholder={"CardNo"}
-                      type={"number"}
-                      textChange={(cardNo) => this.setState({ cardNo })}
-                    />
-                    {/* <TextBox
-placeholder={"Expiration"}
-type={"text"}
-textChange={(expiration) => this.setState({ expiration })}
-/> */}
-                    <TextBox
-                      placeholder={"CVV"}
-                      type={"number"}
-                      textChange={(cvv) => this.setState({ cvv })}
-                    />
+                    <div className="mb-3">
+                      <label className="form-label">cardHolderName</label>
+
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="cardName"
+                        name="cardName"
+                        onChange={(e) =>
+                          this.setState({
+                            cardName: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                    <div className="mb-3">
+                      <label className="form-label">cardNumber</label>
+
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="cardNo"
+                        name="cardNo"
+                        onChange={(e) =>
+                          this.setState({
+                            cardNo: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                    <div className="mb-3">
+                      <label className="form-label">cvv</label>
+
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="cvv"
+                        name="cvv"
+                        onChange={(e) =>
+                          this.setState({
+                            cvv: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+
                     <button
-                      className={"btn btn-dark w-100 text-uppercase"}
-                      onClick={() => {
-                        this.orders();
-                      }}
+                      type="submit"
+                      className="btn bg-primary w-100 text-uppercase text-white"
                     >
-                      CheckOut{" "}
+                      Payment
                     </button>
                   </form>
                 </Column>
-                <Column size={4} classes="offset-md-3 mt-5">
+                <Column size={5} classes="offset-md-1 mt-5">
                   <div className="card border border-3 shadow-lg">
                     <h3 className="fw-bold text-dark ">
-                      Name :{" "}
-                      <span className="text-warning">
-                        {" "}
+                      Name :
+                      <span className="text-success">
                         {this.state.userList.userName}
                       </span>
                     </h3>
                     <h3 className="fw-bold text-dark">
-                      Email :{" "}
-                      <span className="text-warning">
-                        {this.state.userList.userEmail}{" "}
-                      </span>{" "}
+                      Email :
+                      <span className="text-success">
+                        {this.state.userList.userEmail}
+                      </span>
                     </h3>
                     {this.state.addressData.map((addr: any) => (
                       <div>
                         <h3 className="fw-bold text-dark">
-                          Address1 :{" "}
-                          <span className="text-warning">{addr.line1} </span>{" "}
+                          Address1 :
+                          <span className="text-primary">{addr.line1} </span>
                         </h3>
                         <h3 className="fw-bold text-dark">
-                          Address2 :{" "}
-                          <span className="text-warning">{addr.line1} </span>{" "}
+                          Address2 :
+                          <span className="text-primary">{addr.line1} </span>
                         </h3>
                         <h3 className="fw-bold text-dark">
-                          Address1 :{" "}
-                          <span className="text-warning">{addr.line2} </span>{" "}
+                          Address1 :
+                          <h3 className="fw-bold text-dark">
+                            <span className="text-primary">{addr.line2} </span>
+                          </h3>
+                          City :
+                          <span className="text-primary">{addr.city} </span>
                         </h3>
                         <h3 className="fw-bold text-dark">
-                          City :{" "}
-                          <span className="text-warning">{addr.city} </span>{" "}
+                          State :
+                          <span className="text-primary">{addr.state} </span>
                         </h3>
                         <h3 className="fw-bold text-dark">
-                          State :{" "}
-                          <span className="text-warning">{addr.state} </span>{" "}
-                        </h3>
-                        <h3 className="fw-bold text-dark">
-                          Pinocode :{" "}
-                          <span className="text-warning">{addr.pincode} </span>{" "}
+                          Pinocode :
+                          <span className="text-primary">{addr.pincode} </span>
                         </h3>
                       </div>
                     ))}
                     <div>
-                      <h2 className="fw-bold"> Total Amount:{finalData}</h2>
+                      <h2 className="fw-bold">
+                        Total Amount:{this.state.Amount}
+                      </h2>
                     </div>
                   </div>
                 </Column>

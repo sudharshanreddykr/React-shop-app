@@ -6,35 +6,34 @@ type IAction = {
   id: number;
   qtyId: number;
 } & Action;
-
 // state : initialise, immutable
 function cartReducer(store: CartType[] = [], action: IAction) {
   switch (action.type) {
     case CartActions.ActionTypes.ADD_TO_CART:
       return [...store, { ...action.product, productQty: 1 }];
-    case CartActions.ActionTypes.REMOVE_ITEM:
-      return store.filter((order) => order.productId !== action.id);
 
-        case CartActions.ActionTypes.INCREAMENT:
-      return (store.map((order) => {
-        if (order.productId === action.qtyId) {
-          order.productQty++
+    case CartActions.ActionTypes.REMOVE_ITEM:
+      return store.filter((product) => product.productId !== action.id);
+
+    case CartActions.ActionTypes.INCREAMENT:
+      return store.map((product) => {
+        if (product.productId === action.qtyId) {
+          product.productQty++;
         }
-        return order
-      }));
+        return product;
+      });
 
     case CartActions.ActionTypes.DECREMENT:
-      return (store.map((order) => {
-        if (order.productId === action.id) {
-          order.productQty--
+      return store.map((product) => {
+        if (product.productId === action.qtyId) {
+          product.productQty--;
         }
-        return order
-      } ) );
+        return product;
+      });
     case CartActions.ActionTypes.RESECART:
-      return []; 
+      return [];
     default:
       return store;
   }
 }
-
 export default cartReducer;

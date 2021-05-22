@@ -1,7 +1,7 @@
 import { Action } from "redux";
+import CartActions from "../actions/CartActions";
 import { ProductType } from "../../types";
-import ProductActions from "../actions/productDetailAction";
-
+import ProductActions from "../actions/ProductDetailAction";
 
 type IAction = {
   product: ProductType[];
